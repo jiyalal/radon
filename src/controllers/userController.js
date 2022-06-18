@@ -5,13 +5,19 @@ const createUser = async function (abcd, xyz) {
   //You can name the req, res objects anything.
   //but the first parameter is always the request 
   //the second parameter is always the response
+  try { 
+
   let data = abcd.body;
   let savedData = await userModel.create(data);
   console.log(abcd.newAtribute);
-  xyz.send({ msg: savedData });
+  xyz.status(201).send({ msg: savedData });
+  } catch(error){
+    res.status(500).send(error.message)
+  }
 };
 
 const loginUser = async function (req, res) { 
+  try{
   let userName = req.body.emailId;
   let password = req.body.password;
 
@@ -21,7 +27,7 @@ const loginUser = async function (req, res) {
       status: false,
       msg: "username or the password is not corerct",
     });
-
+  
   // Once the login is successful, create the jwt token with sign function
   // Sign function has 2 inputs:
   // Input 1 is the payload or the object containing data to be set in token
@@ -38,6 +44,9 @@ const loginUser = async function (req, res) {
   );
   res.setHeader("x-auth-token", token);
   res.send({ status: true, data: token });
+  }  catch(error){
+    res.status(403).send(error.message)}
+
 };
 
 const getUserData = async function (req, res) {
